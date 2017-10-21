@@ -1,4 +1,5 @@
 #include "Solution.h"
+#include "Board.h"
 #include "time.h"
 #include "stdlib.h"
 #include <utility>

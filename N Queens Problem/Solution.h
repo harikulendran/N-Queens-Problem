@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Board.h"
-
 class Solution {
 	public:
-		char state[SIZE];
+		char state[8];
 	public:
 		Solution();
 	public:

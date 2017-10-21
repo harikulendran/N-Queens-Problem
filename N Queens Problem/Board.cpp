@@ -3,14 +3,6 @@
 
 AttackPair::AttackPair(char ai, char bi) : a(ai), b(bi) {}
 
-bool AttackPair::operator==(const AttackPair& rhs) {
-	return (a == rhs.a && b == rhs.b) || (a == rhs.b && b == rhs.a);
-}
-
-bool AttackPair::operator!=(const AttackPair& rhs) {
-	return !(*this == rhs);
-}
-
 Board::Board() {
 	for (int j = 0; j < SIZE; j++)
 		for (int i = 0; i < SIZE; i++)
@@ -19,15 +11,17 @@ Board::Board() {
 
 void Board::setBoard(const Solution& s) {
 	for (int i = 0; i < SIZE; i++)
-		state[i][(int)s.state[i]] = 'Q';
+		state[i][(int)s.state[i]] = (char)i;
 }
 
-int evaluate() {
+int Board::evaluate() {
 
 }
 
-int evaluatePosition(int x, int y, int io, int jo) {
-	for (int j = 0; j < SIZE; j+=jo)
-		for (int i = 0; i < SIZE; i+=io)
-			
+int Board::evaluatePosition(int x, int y, int io, int jo) {
+	char a = state[x][y];
+	for (int j = 1; j < SIZE; j += jo)
+		for (int i = 1; i < SIZE; i += io)
+			if (state[x + i][y + j] != '.')
+				pairs.push_back(std::move(AttackPair{ a,state[x + i][y + j] }));
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include "Solution.h"
-#include <set>
+#include <vector>
 
 const static int SIZE = 8;
 
@@ -12,26 +12,32 @@ public:
 
 public:
 	AttackPair(char ai, char bi);
+	bool operator==(const AttackPair& rhs);
+	bool operator!=(const AttackPair& rhs);
 };
 
-bool eql(const AttackPair &lhs, const AttackPair &rhs) {
-	return (lhs.a == rhs.a && lhs.b == rhs.b) || (lhs.a == rhs.b && rhs.a == lhs.b);
-}
-
-	//auto eql = [](AttackPair a, AttackPair b) { };
+struct AttackPairEql {
+	bool operator()(const AttackPair &lhs, const AttackPair &rhs) {
+	}
+};
 
 class Board {
 	public:
 		char state[SIZE][SIZE];
-		std::set<AttackPair, bool(*)(const AttackPair&, const AttackPair&)> pairs{ &eql };
+		std::vector<AttackPair> pairs{};
 
 	public:
 		Board();
 
 	public:
+		void insert(AttackPair& a);
 		void reset();
 		void setBoard(const Solution& s);
 		int evaluate(const Solution& s);
 		void evaluatePosition(int x, int y);
-		void evaluateDirections(int x, int y, int io, int jo);
+		void evaluateLR(int x, int y);
+		void evaluateUD(int x, int y);
+		void evaluateDR(int x, int y);
+		void evaluateDL(int x, int y);
+		void print();
 };

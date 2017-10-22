@@ -42,7 +42,13 @@ int Board::evaluate(const Solution& s) {
 		evaluatePosition(i, (int)s.state[i] - 1);
 	int score = pairs.size();
 	pairs.clear();
-	return 28 - score;
+	if (score == 0) {
+		std::cout << std::endl << "Solution Found: " << std::endl;
+		print();
+		int qq;
+		std::cin >> qq;
+	}
+	return (SIZE * (SIZE-1))/2 - score;
 }
 
 void Board::evaluatePosition(int x, int y) {

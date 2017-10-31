@@ -12,64 +12,44 @@ struct LessThanFitness {
 };
 
 int main() {
-	/*Solution s{};
-	s.state[0] = (char)3;
-	s.state[1] = (char)2;
-	s.state[2] = (char)5;
-	s.state[3] = (char)4;
-	s.state[4] = (char)3;
-	s.state[5] = (char)2;
-	s.state[6] = (char)1;
-	s.state[7] = (char)3;
-
-	Board b{};
-	*/
-	//std::cout << "Solution Score: " << b.evaluate(s) << std::endl;
-
 	//init
 	Board b{};
-	int totalFitness = 0;
-	int popSize = 100;
-	std::priority_queue<Solution, std::vector<Solution>, LessThanFitness> selected{};
+	int popSize = 1000;
+	std::vector<Solution> selecV{};
 	srand(time(NULL));
 	std::vector<Solution> initPop{};
+
 	//Generate random initial population and apply fitness function
 	for (int i = 0; i < popSize; i++) {
 		initPop.push_back(Solution::random());
 	}
 
-	while (initPop.size() > 1) {
+	bool running = true;
+	while (running) {
 		//Calculate selection Prob and select accordingly
 		for (int i = 0; i < initPop.size(); i++) {
 			initPop[i].fitness = b.evaluate(initPop[i]);
-			totalFitness += initPop[i].fitness;
 			initPop[i].selectionProb = ((double)initPop[i].fitness / (double)28) * 100;
 			if (rand() % 100 < initPop[i].selectionProb)
-				selected.push(initPop[i]);
+				selecV.push_back(initPop[i]);
+			if (initPop[i].fitness == ((SIZE * (SIZE - 1)) / 2))
+				running = false;
 		}
 
 		//Apply cross over
 		initPop.clear();
-		int noSelected = (selected.size() % 2 == 0) ? selected.size() : selected.size() - 1;
-		for (int i = 0; i < noSelected / 2; i++) {
-			Solution a = selected.top();
-			selected.pop();
-			Solution b = selected.top();
-			selected.pop();
+		for (int i = 0; i < selecV.size(); i++)
+			for (int j = i + 1; j < selecV.size(); j++) {
+				if (selecV.size() > 10000) {
+					i = selecV.size();
+					j = selecV.size();
+				}
+				if (rand() % 100 < selecV[j].selectionProb)
+					initPop.push_back(Solution::crossOver(selecV[i], selecV[j], rand() % 7 + 1));
+			}
 
-			initPop.push_back(Solution::crossOver(a,b, rand() % 7 + 1));
-
-			int	qq = 0;
-
-		}
-		while (selected.size() > 0)
-			selected.pop();
-	//	std::cout << ".";
+		selecV.clear();
+		running = (!running) ? false : (initPop.size() > 1);
 	}
-
-	b.evaluate(initPop[0]);
-	std::cout << "Score: " << initPop[0].fitness << std::endl;
-	b.print();
-
     return 0;
 }

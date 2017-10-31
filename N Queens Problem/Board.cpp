@@ -45,8 +45,6 @@ int Board::evaluate(const Solution& s) {
 	if (score == 0) {
 		std::cout << std::endl << "Solution Found: " << std::endl;
 		print();
-		int qq;
-		std::cin >> qq;
 	}
 	return (SIZE * (SIZE-1))/2 - score;
 }

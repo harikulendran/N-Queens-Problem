@@ -2,7 +2,7 @@
 #include "Solution.h"
 #include <vector>
 
-const static int SIZE = 8;
+const static int SIZE = 11;
 
 class Solution;
 
@@ -24,6 +24,10 @@ struct AttackPairEql {
 class Board {
 	public:
 		char state[SIZE][SIZE];
+		int sumsLR[SIZE];
+		int sumsUD[SIZE];
+		int sumsDR[SIZE];
+		int sumsDL[SIZE];
 		std::vector<AttackPair> pairs{};
 
 	public:
@@ -34,10 +38,9 @@ class Board {
 		void reset();
 		void setBoard(const Solution& s);
 		int evaluate(const Solution& s);
-		void evaluatePosition(int x, int y);
-		void evaluateLR(int x, int y);
-		void evaluateUD(int x, int y);
-		void evaluateDR(int x, int y);
-		void evaluateDL(int x, int y);
+		void evaluateDirs();
+		int countAttack();
+		int comb(int n, int k);
+		int fact(int n);
 		void print();
 };

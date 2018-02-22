@@ -21,6 +21,13 @@ void Board::reset() {
 	for (int j = 0; j < SIZE; j++)
 		for (int i = 0; i < SIZE; i++)
 			state[j][i] = '.';
+
+	for (int j = 0; j < SIZE; j++) {
+		sumsLR[j] = 0;
+		sumsUD[j] = 0;
+		sumsDR[j] = 0;
+		sumsDL[j] = 0;
+	}
 }
 
 void Board::insert(AttackPair& a) {
@@ -38,10 +45,8 @@ void Board::setBoard(const Solution& s) {
 
 int Board::evaluate(const Solution& s) {
 	setBoard(s);
-	for (int i = 0; i < SIZE; i++)
-		evaluatePosition(i, (int)s.state[i] - 1);
-	int score = pairs.size();
-	pairs.clear();
+	evaluateDirs();
+	int score = countAttack();
 	if (score == 0) {
 		std::cout << std::endl << "Solution Found: " << std::endl;
 		print();
@@ -49,53 +54,46 @@ int Board::evaluate(const Solution& s) {
 	return (SIZE * (SIZE-1))/2 - score;
 }
 
-void Board::evaluatePosition(int x, int y) {
-	evaluateLR(x, y);
-	evaluateUD(x, y);
-	evaluateDR(x, y);
-	evaluateDL(x, y);
-}
-
-void Board::evaluateLR(int x, int y) {
-	char a = state[x][y];
+void Board::evaluateDirs() {
+	for (int j = 0; j < SIZE; j++)
+		for (int i = 0; i < SIZE; i++)
+			if (state[i][j] != '.')
+				sumsLR[j]++;
 	for (int i = 0; i < SIZE; i++)
-		if (i != x && state[i][y] != '.')
-			insert(std::move(AttackPair{a, state[i][y]}));
-}
-
-void Board::evaluateUD(int x, int y) {
-	char a = state[x][y];
-	for (int i = 0; i < SIZE; i++)
-		if (i != y && state[x][i] != '.')
-			insert(std::move(AttackPair{a, state[x][i]}));
-}
-
-void Board::evaluateDR(int x, int y) {
-	int low = (x < y) ? x : y;
-	int nX = x - low;
-	int nY = y - low;
-	char a = state[x][y];
-
-	for (int i = 0; i < low; i++) {
-		if (nX != x && nY != y && state[nX][nY] != '.')
-			insert(std::move(AttackPair{ a, state[nX][nY] }));
-		nX++;
-		nY++;
+		for (int j = 0; j < SIZE; j++)
+			if (state[i][j] != '.')
+				sumsUD[j]++;
+	for (int k = 1; k < SIZE - 1; k++) {
+		int j = 0;
+		for (int i = k; i >= 0; i--)
+			if (state[j++][i] != '.')
+				sumsDR[k]++;
+	}
+	for (int k = 1; k < SIZE - 1; k++) {
+		int j = SIZE-1;
+		for (int i = k; i >= 0; i--)
+			if (state[j--][i] != '.')
+				sumsDL[k]++;
 	}
 }
 
-void Board::evaluateDL(int x, int y) {
-	int low = (SIZE - 1 - x < y) ? SIZE - 1 - x : y;
-	int nX = x + low;
-	int nY = y - low;
-	char a = state[x][y];
-
-	for (int i = 0; i < low; i++) {
-		if (nX != x && nY != y && state[nX][nY] != '.')
-			insert(std::move(AttackPair{ a, state[nX][nY] }));
-		nX--;
-		nY++;
+int Board::countAttack() {
+	int out = 0;
+	for (int i = 0; i < SIZE; i++) {
+		out += comb(sumsLR[i], 2);
+		out += comb(sumsUD[i], 2);
+		out += comb(sumsDR[i], 2);
+		out += comb(sumsDL[i], 2);
 	}
+	return out;
+}
+
+int Board::comb(int n, int k) {
+	return (n==2)? 1 : (n <2) ? 0 : fact(n) / (fact(k) * fact(n - k));
+}
+
+int Board::fact(int n) {
+	return (n == 1) ? n : n * fact(n - 1);
 }
 
 void Board::print() {

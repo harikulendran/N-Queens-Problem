@@ -25,6 +25,7 @@ int main() {
 	}
 
 	bool running = true;
+	int count = 0;
 	while (running) {
 		//Calculate selection Prob and select accordingly
 		for (int i = 0; i < initPop.size(); i++) {
@@ -40,16 +41,17 @@ int main() {
 		initPop.clear();
 		for (int i = 0; i < selecV.size(); i++)
 			for (int j = i + 1; j < selecV.size(); j++) {
+				if (rand() % 100 < selecV[j].selectionProb)
+					initPop.push_back(Solution::crossOver(selecV[i], selecV[j], rand() % (SIZE-1) + 1));
 				if (selecV.size() > 10000) {
 					i = selecV.size();
 					j = selecV.size();
 				}
-				if (rand() % 100 < selecV[j].selectionProb)
-					initPop.push_back(Solution::crossOver(selecV[i], selecV[j], rand() % 7 + 1));
 			}
 
 		selecV.clear();
-		running = (!running) ? false : (initPop.size() > 1);
+		count++;
+		running = (!running) ? false : (count < 90000000);
 	}
     return 0;
 }

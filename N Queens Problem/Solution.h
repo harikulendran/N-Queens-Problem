@@ -2,7 +2,7 @@
 
 class Solution {
 	public:
-		char state[8];
+		char state[11];
 		int fitness = 0;
 		double selectionProb = 0;
 	public:

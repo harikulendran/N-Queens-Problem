@@ -63,13 +63,13 @@ void Board::evaluateDirs() {
 		for (int j = 0; j < SIZE; j++)
 			if (state[i][j] != '.')
 				sumsUD[j]++;
-	for (int k = 1; k < SIZE - 1; k++) {
+	for (int k = 1; k < SIZE; k++) {
 		int j = 0;
 		for (int i = k; i >= 0; i--)
 			if (state[j++][i] != '.')
 				sumsDR[k]++;
 	}
-	for (int k = 1; k < SIZE - 1; k++) {
+	for (int k = 1; k < SIZE; k++) {
 		int j = SIZE-1;
 		for (int i = k; i >= 0; i--)
 			if (state[j--][i] != '.')
@@ -89,7 +89,7 @@ int Board::countAttack() {
 }
 
 int Board::comb(int n, int k) {
-	return (n==2)? 1 : (n <2) ? 0 : fact(n) / (fact(k) * fact(n - k));
+	return (n==k)? 1 : (n <k) ? 0 : fact(n) / (fact(k) * fact(n - k));
 }
 
 int Board::fact(int n) {
